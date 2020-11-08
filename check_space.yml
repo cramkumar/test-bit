@@ -1,0 +1,16 @@
+- hosts: localhost
+  gather_facts: True
+  vars:
+    my_dir: /var
+  tasks:
+    - stat:
+        path: "{{ my_dir }}"
+      register: result
+    - debug:
+        msg: "size:{{ result.stat.size }} mode:{{ result.stat.mode }}"
+    - debug:
+        msg: "{{ my_dir }} is mount-point"
+      when: my_dir in ansible_mounts|json_query('[].mount')
+    - debug:
+        msg: "{{ my_dir }} is not mount-point"
+      when: my_dir not in ansible_mounts|json_query('[].mount')

@@ -1,0 +1,35 @@
+- hosts: localhost
+  gather_facts: True
+  vars:
+    my_dir: /
+  tasks:
+    - stat:
+        path: "{{ my_dir }}"
+      register: result
+    - debug:
+        msg: "block_size:{{ result.stat.block_size }}"
+
+    - debug: 
+        msg: "{{ ansible_mounts }}"
+
+    - debug: 
+        msg: "{{ ansible_mounts|json_query('[?mount == `/var/lib/nginx`].size_available') }}"
+
+    - debug: 
+        msg: "{{ ansible_mounts|json_query(jmesquery) | first }}"
+      vars:
+        jmesquery: "[?mount == `/var/lib/nginx`].size_available"
+      tags:
+        - jmespath 
+
+#    - debug: 
+#        msg: "Mount Point {{ item.mount }} is at {{ item.block_used/item.block_total*100}} percent"
+#      loop: "{{ ansible_mounts }}"
+#
+#    - debug:
+#        msg: "{{ my_dir }} is mount-point"
+#      when: my_dir in ansible_mounts|json_query('[].mount')
+#
+#    - debug:
+#        msg: "{{ my_dir }} is not mount-point"
+#      when: my_dir not in ansible_mounts|json_query('[].mount')

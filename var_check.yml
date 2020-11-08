@@ -1,0 +1,17 @@
+- hosts: localhost
+  gather_facts: True
+  tasks:
+    - name: Check /var free space
+      assert:
+        that: 
+          - item.size_available|int  > 1024
+      when: item.mount == "/var"
+      with_items: "{{ ansible_mounts }}"
+      register: disk_free
+
+#        msg: "'my_param' is greater than 1024"
+#      vars:
+#        q: "[?mount == '/var'].size_available"
+#        var_free_mb: "{{ ansible_mounts | json_query(q) | first | int / 1024 / 1024 }}"
+#      tags:
+#        - jmespath

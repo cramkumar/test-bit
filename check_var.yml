@@ -1,0 +1,15 @@
+- hosts: localhost
+  gather_facts: True
+  tasks:
+#    - name: Check /var free space
+#      assert:
+#        that: 
+#          - var_free_mb|int > 1024
+    - debug:
+        msg: "{{ ansible_mounts|json_query('[?mount == `/var`].size_available')  }}"
+
+#      vars:
+#        q: "[?mount == `/var`].size_available"
+#        var_free_mb: "{{ ansible_mounts | json_query(q) | first }}"
+      tags:
+        - jmespath
